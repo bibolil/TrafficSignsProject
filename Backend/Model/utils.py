@@ -1,7 +1,9 @@
 import os
 from PIL import Image
+import torch
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 # Data Preparation
 def load_data(image_dir, label_dir):
@@ -48,4 +50,24 @@ def plot_losses(train_losses, val_losses):
     plt.ylabel("Loss")
     plt.title("Training and Validation Loss")
     plt.legend()
+    plt.show()
+
+def plot_confusion_matrix(model, test_loader, classes, device):
+    model.eval()
+    y_true = []
+    y_pred = []
+
+    with torch.no_grad():
+        for images, labels in test_loader:
+            images, labels = images.to(device), labels.to(device)
+            outputs = model(images)
+            _, predictions = torch.max(outputs, 1)
+            y_true.extend(labels.cpu().numpy())
+            y_pred.extend(predictions.cpu().numpy())
+
+    cm = confusion_matrix(y_true, y_pred)
+    
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=classes)
+    disp.plot(cmap=plt.cm.Blues, xticks_rotation="vertical")
+    plt.title("Confusion Matrix")
     plt.show()

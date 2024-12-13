@@ -10,6 +10,7 @@ from TrafficSignsDataset import TrafficSignsDataset
 from evaluate import evaluate_model_on_test_data
 from utils import load_data, plot_losses
 
+
 def main():
     num_classes = 15
     batch_size = 64

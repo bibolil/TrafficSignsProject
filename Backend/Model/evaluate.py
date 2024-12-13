@@ -2,7 +2,9 @@ import torch
 from TrafficSignsDataset import TrafficSignsDataset
 from utils import load_data
 from torch.utils.data import DataLoader
+from utils import plot_confusion_matrix
 
+classes =['Green Light', 'Red Light', 'Speed Limit 10', 'Speed Limit 100', 'Speed Limit 110', 'Speed Limit 120', 'Speed Limit 20', 'Speed Limit 30', 'Speed Limit 40', 'Speed Limit 50', 'Speed Limit 60', 'Speed Limit 70', 'Speed Limit 80', 'Speed Limit 90', 'Stop']
 
 def evaluate_model_on_test_data(model, image_dir, label_dir, criterion, device, transform):
 
@@ -29,5 +31,6 @@ def evaluate_model_on_test_data(model, image_dir, label_dir, criterion, device, 
 
     test_loss /= len(test_loader)
     test_accuracy = correct / total
+    plot_confusion_matrix(model, test_loader, classes, device)
 
     return test_loss, test_accuracy

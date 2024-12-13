@@ -19,7 +19,7 @@ def load_model(model_class, model_path, num_classes, device):
     model.eval() 
     return model
 
-def infer(model, image_path,device ,transform=transform):
+def inference_imagePath(model, image_path,device ,transform=transform):
     image = Image.open(image_path).convert("RGB").resize((30, 30))
     image = transform(image).unsqueeze(0).to(device) 
 
