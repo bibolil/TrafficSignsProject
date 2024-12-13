@@ -1,6 +1,7 @@
 Frontend/node_modules
 Backend/Model/Dataset/DataSet
 Backend/Model/Dataset/output
+Backend/Model/Dataset/processed_data
 Backend/__pycache__
 Backend/Model/__pycache__
 Backend/Api/__pycache__

@@ -54,7 +54,7 @@ def main():
 
     test_image_path="Dataset/output/test/images/10a18f3d-79d7-447f-ab9e-6de78b09477f_jpg.rf.8ce6805731f28537f453028a8d5a4885_0.jpg"
 
-    predicted_class = infer(model, test_image_path, transform, device)
+    predicted_class = inference_imagePath(model, test_image_path, transform, device)
     print(f"Predicted class: {predicted_class}")
     print(f"predicted class label: {classes[predicted_class]}")
 

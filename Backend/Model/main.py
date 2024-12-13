@@ -1,3 +1,4 @@
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -8,8 +9,9 @@ from train import train
 from TrafficSignClassifier import TrafficSignClassifier
 from TrafficSignsDataset import TrafficSignsDataset
 from evaluate import evaluate_model_on_test_data
-from utils import load_data, plot_losses
+from utils import load_data, plot_losses,load_processed_data
 
+classes =['Green Light', 'Red Light', 'Speed Limit 10', 'Speed Limit 100', 'Speed Limit 110', 'Speed Limit 120', 'Speed Limit 20', 'Speed Limit 30', 'Speed Limit 40', 'Speed Limit 50', 'Speed Limit 60', 'Speed Limit 70', 'Speed Limit 80', 'Speed Limit 90', 'Stop']
 
 def main():
     num_classes = 15
@@ -24,6 +26,11 @@ def main():
     train_data, train_labels = load_data(train_image_dir, train_label_dir)
     print(f"Loaded {len(train_data)} training images with labels.")
 
+    train2_image_dir = "Dataset/processed_data/train/images"
+    train2_label_dir = "Dataset/processed_data/train/labels"
+    train2_data, train2_labels = load_processed_data(train2_image_dir,train2_label_dir,classes)
+    
+
     valid_image_dir = "Dataset/output/valid/images"
     valid_label_dir = "Dataset/output/valid/labels"
     valid_data, valid_labels = load_data(valid_image_dir, valid_label_dir)
@@ -33,8 +40,20 @@ def main():
         transforms.ToTensor(),
         transforms.Normalize((0.5,), (0.5,))
     ])
+    train_transform = transforms.Compose([
+    transforms.RandomRotation(20),               
+    transforms.RandomResizedCrop(30),           
+    transforms.RandomHorizontalFlip(p=0.5),     
+    transforms.RandomAffine(0, shear=0.2),       
+    transforms.RandomAffine(0, scale=(0.8, 1.2)),
+    transforms.ToTensor(),                       
+    transforms.Normalize((0.5,), (0.5,))         
+])
+    
+    print(f"train2_data shape: {train2_data.shape}")
+    print(f"train_data shape: {train_data.shape}")
 
-    train_dataset = TrafficSignsDataset(train_data, train_labels, transform=transform)
+    train_dataset = TrafficSignsDataset(np.concatenate((train2_data, train_data), axis=0), np.concatenate((train2_labels, train_labels),axis=0), transform=transform)
     valid_dataset = TrafficSignsDataset(valid_data, valid_labels, transform=transform)
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
